@@ -14,7 +14,7 @@ $ python emulator.py -h
 
 -n = number of nodes in initial setup
 -p = ports on which these nodes will be listening
--l = location of the node (first give all X and thn all Y co-ordinates)
+-l = location of the node (first give all X and then all Y co-ordinates)
 -seq = If number of nodes to create are very large, specifying each port is tedious.
         If you enter -seq, just enter the port where you want to start, other ports will be taken sequentially
 -rloc = similar to -seq you don't need to specify all locations if number of nodes is large you just give range.
