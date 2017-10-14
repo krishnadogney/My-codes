@@ -1,0 +1,9 @@
+syntax="proto2";
+package packet;
+
+message remove_node{
+    required string cmd=1;
+    optional int64 node_addr=2;
+    required int32 listening_port=3;
+
+}
