@@ -1,4 +1,5 @@
 """Author: Sagar Shelke
+
 Overall Architecture: There are two main threads. First thread sets up network initially by taking command line arguments
 Second thread is to add/remove and query the status of the network.
 Both threads in itself creates sub-threads and all variables changed  are global.
@@ -36,23 +37,32 @@ Emulation manager is listening on port 40001.
 a. add node
 packet format
 
-We use protocol buffers to send data since they are language and platform neutral.  
-
-cmd = "add_node", non = 2 ,ports = [40002, 40003], loc = [1,23,13,4], seq = False, rloc = False
+{"cmd":"add_node", "-n":2 ,"p":[40002, 40003], "-l":[1,23,13,4], "-seq":False, "-rloc": False}
 This packet will make manager add 2 new nodes listening on port 40002, 40003 at location (1,13) and (23,4) respectively.
 * Here we pass list(different from commandline arguments).
 
-seq, rloc follows same rules. If you are specifying everything, set them to false OR
-cmd = "add_node", non = 10 ,ports = [40002], loc = [100], seq = True, rloc = True}
+-seq, -rloc follows same rules. If you are specifying everything, set them to false OR
+{"cmd":"add_node", "-n":10 ,"p":[40002], "-l":[100], "-seq":True, "-rloc": True}
 add 10 nodes starting from 40002 at random locations.
 
-* CHECK client_controller.py file to learn how to code protocol buffers
+e.g. In python you can send above packet as given below
+
+import socket
+import pickle
+
+host = "localhost"    # everything is running on localhost
+port = 40001         # manager listening on this
+message = {"cmd": "add_node", "-n":4, "-p": [40009], "-l": [100], "-seq": True, "-rloc": True}
+s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+s.connect((host, port))
+s.sendall(pickle.dumps(message))  # pickle will be replaced by google protocol buffers in coming versions
+s.close()
 
 b. remove node
 
 packet format
 
-cmd = "rm_node",ports = [40002, 40003]
+{"cmd":"rm_node","p":[40002, 40003]}
 This packet will make manager to close nodes listening on ports 40002 and 40003
 * All ports you want to close must be passed as list
 
@@ -61,7 +71,7 @@ You can send this packet same in python same as example given above by inserting
 c. Query the status of the network
 packet format
 
-cmd = "status"
+{"cmd":"status"}
 This packet make manager tell you the current state of the network.
 """
 
@@ -73,7 +83,6 @@ import socket
 import pickle
 import node
 import time
-import ctrl_buf_pb2
 
 # define dictionaries shared by all threads
 port_bucket = {}   # "port":node_id
@@ -125,23 +134,21 @@ class EmulatorHead(object):
             print("New control command from {}".format(addr))
 
             data = conn.recv(1024)
-
-            rec_control = ctrl_buf_pb2.Control()      # decode protobuf using class object
-            rec_control.ParseFromString(data)
-            command = rec_control.cmd
+            con_packet = pickle.loads(data)
+            command = con_packet["cmd"]
             if command == "add_node":
-                nodes_to_add = rec_control.non
-                is_seq_new = rec_control.seq
-                rloc_new = rec_control.rloc
+                nodes_to_add = con_packet["-n"]
+                is_seq_new = con_packet["-seq"]
+                rloc_new = con_packet["-rloc"]
                 node_id_list_new = random.sample(range(100), nodes_to_add)
                 if is_seq_new:
-                    port_numbers_new = [rec_control.ports[0] + i for i in range(nodes_to_add)]
+                    port_numbers_new = [con_packet["-p"][0] + i for i in range(nodes_to_add)]
                 else:
-                    port_numbers_new = rec_control.ports
+                    port_numbers_new = con_packet["-p"]
                 if rloc_new:
-                    location_new = random.sample(range(rec_control.loc[0]), nodes_to_add * 2)
+                    location_new = random.sample(range(con_packet["-l"][0]), nodes_to_add * 2)
                 else:
-                    location_new = rec_control.loc
+                    location_new = con_packet["-l"]
 
                 for j in range(nodes_to_add):
 
@@ -156,7 +163,7 @@ class EmulatorHead(object):
                     threads[port_numbers_new[j]] = t
 
             elif command == "rm_node":
-                port_rmt = rec_control.ports
+                port_rmt = con_packet["-p"]
                 for port in port_rmt:
                     run_status[port] = False
                     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)     # we establish connection and close
@@ -222,4 +229,5 @@ if __name__ == "__main__":
 
     for thread in primary_threads:                                      # join threads to wait till all are executed
         thread.join()
+
 
