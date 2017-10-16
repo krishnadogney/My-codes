@@ -1,0 +1,12 @@
+package emulator_control;
+
+message Control{
+	required string cmd = 1;
+	optional int32 non = 2;
+	repeated int32 ports = 3;
+	repeated int32 loc = 4;
+	optional bool seq = 5;
+ 	optional bool rloc=6;
+
+}
+
