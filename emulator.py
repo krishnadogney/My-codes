@@ -2,11 +2,15 @@
 Overall Architecture: There are two main threads. First thread sets up network initially by taking command line arguments
 Second thread is to add/remove and query the status of the network.
 Both threads in itself creates sub-threads and all variables changed  are global.
+
 This program dynamically create, destroy tcp nodes in network. In this stage, following command line arguments are
 supported:
+
 * Make sure you have node.py file in the same folder as emulator.py
+
 $ python emulator.py -h
         This will show arguments accepted by the program
+
 -n = number of nodes in initial setup
 -p = ports on which these nodes will be listening
 -l = location of the node (first give all X and then all Y co-ordinates)
@@ -14,43 +18,50 @@ $ python emulator.py -h
         If you enter -seq, just enter the port where you want to start, other ports will be taken sequentially
 -rloc = similar to -seq you don't need to specify all locations if number of nodes is large you just give range.
         Random locations for x and y will be selected
+
 1. Set Up the network
 for two nodes
 $ python emulator.py -n 2 -p 40002 40003 -l 1 1 2 3
 This will create two nodes listening on port 40002. 40003 at location (1,2) and (1,3) respectively
 * Do not use port 40001 for nodes, emulation manager is listening on it for control packets
+
 for 100 nodes
 $python emulator.py -n 100 -p 40100 -l 200 -seq -rloc
 This command will create 100 nodes listening on ports [40100-40199] at random location in the range 200
+
 2. Add/ Remove nodes, Check status
+
 Emulation manager is listening on port 40001.
+
 a. add node
 packet format
-{"cmd":"add_node", "-n":2 ,"p":[40002, 40003], "-l":[1,23,13,4], "-seq":False, "-rloc": False}
+
+We use protocol buffers to send data since they are language and platform neutral.  
+
+cmd = "add_node", non = 2 ,ports = [40002, 40003], loc = [1,23,13,4], seq = False, rloc = False
 This packet will make manager add 2 new nodes listening on port 40002, 40003 at location (1,13) and (23,4) respectively.
 * Here we pass list(different from commandline arguments).
--seq, -rloc follows same rules. If you are specifying everything, set them to false OR
-{"cmd":"add_node", "-n":10 ,"p":[40002], "-l":[100], "-seq":True, "-rloc": True}
+
+seq, rloc follows same rules. If you are specifying everything, set them to false OR
+cmd = "add_node", non = 10 ,ports = [40002], loc = [100], seq = True, rloc = True}
 add 10 nodes starting from 40002 at random locations.
-e.g. In python you can send above packet as given below
-import socket
-import pickle
-host = "localhost"    # everything is running on localhost
-port = 40001         # manager listening on this
-message = {"cmd": "add_node", "-n":4, "-p": [40009], "-l": [100], "-seq": True, "-rloc": True}
-s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-s.connect((host, port))
-s.sendall(pickle.dumps(message))  # pickle will be replaced by google protocol buffers in coming versions
-s.close()
+
+* CHECK client_controller.py file to learn how to code protocol buffers
+
 b. remove node
+
 packet format
-{"cmd":"rm_node","p":[40002, 40003]}
+
+cmd = "rm_node",ports = [40002, 40003]
 This packet will make manager to close nodes listening on ports 40002 and 40003
 * All ports you want to close must be passed as list
+
 You can send this packet same in python same as example given above by inserting this message
+
 c. Query the status of the network
 packet format
-{"cmd":"status"}
+
+cmd = "status"
 This packet make manager tell you the current state of the network.
 """
 
