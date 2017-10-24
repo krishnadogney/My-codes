@@ -80,7 +80,6 @@ import threading
 import random
 import argparse
 import socket
-import pickle
 import node
 import time
 
