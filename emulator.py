@@ -22,6 +22,7 @@ $ python emulator.py -h
 
 1. Set Up the network
 for two nodes
+
 $ python emulator.py -n 2 -p 40002 40003 -l 1 1 2 3
 This will create two nodes listening on port 40002. 40003 at location (1,2) and (1,3) respectively
 * Do not use port 40001 for nodes, emulation manager is listening on it for control packets
