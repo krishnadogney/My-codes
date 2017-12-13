@@ -1,0 +1,10 @@
+/*This .proto file should be desinged based on application.
+ for testing purpose, we are sending number of packets.
+ node will debug number of packets based on data_buf_pb2.py file and change buffer.
+ Aim is just to have node accept data from application in terms of protocol buffers. 
+*/
+package node_data_feed;
+
+message Send{
+	required int32 nop = 1;   // How many packets you will be sending
+}
