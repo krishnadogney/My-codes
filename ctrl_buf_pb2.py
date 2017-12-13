@@ -18,7 +18,7 @@ _sym_db = _symbol_database.Default()
 DESCRIPTOR = _descriptor.FileDescriptor(
   name='ctrl_buf.proto',
   package='emulator_control',
-  serialized_pb=_b('\n\x0e\x63trl_buf.proto\x12\x10\x65mulator_control\"Z\n\x07\x43ontrol\x12\x0b\n\x03\x63md\x18\x01 \x02(\t\x12\x0b\n\x03non\x18\x02 \x01(\x05\x12\r\n\x05ports\x18\x03 \x03(\x05\x12\x0b\n\x03loc\x18\x04 \x03(\x05\x12\x0b\n\x03seq\x18\x05 \x01(\x08\x12\x0c\n\x04rloc\x18\x06 \x01(\x08')
+  serialized_pb=_b('\n\x0e\x63trl_buf.proto\x12\x10\x65mulator_control\"\x8f\x01\n\x07\x43ontrol\x12\x0b\n\x03\x63md\x18\x01 \x02(\t\x12\x0b\n\x03non\x18\x02 \x01(\x05\x12\r\n\x05ports\x18\x03 \x03(\x05\x12\x0b\n\x03loc\x18\x04 \x03(\x05\x12\x0b\n\x03seq\x18\x05 \x01(\x08\x12\x0c\n\x04rloc\x18\x06 \x01(\x08\x12\n\n\x02\x64n\x18\x07 \x01(\x05\x12\x0b\n\x03vcn\x18\x08 \x01(\x05\x12\x0b\n\x03vdn\x18\t \x01(\x05\x12\r\n\x05group\x18\n \x03(\x05')
 )
 _sym_db.RegisterFileDescriptor(DESCRIPTOR)
 
@@ -74,6 +74,34 @@ _CONTROL = _descriptor.Descriptor(
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None),
+    _descriptor.FieldDescriptor(
+      name='dn', full_name='emulator_control.Control.dn', index=6,
+      number=7, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='vcn', full_name='emulator_control.Control.vcn', index=7,
+      number=8, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='vdn', full_name='emulator_control.Control.vdn', index=8,
+      number=9, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='group', full_name='emulator_control.Control.group', index=9,
+      number=10, type=5, cpp_type=1, label=3,
+      has_default_value=False, default_value=[],
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
   ],
   extensions=[
   ],
@@ -85,8 +113,8 @@ _CONTROL = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=36,
-  serialized_end=126,
+  serialized_start=37,
+  serialized_end=180,
 )
 
 DESCRIPTOR.message_types_by_name['Control'] = _CONTROL
