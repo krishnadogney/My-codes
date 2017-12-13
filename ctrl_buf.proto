@@ -1,12 +1,23 @@
+/*Aim of this file to set control parameters for Emulation Head.
+There are three types of parameters
+1. Required- You must enter these or exception will be raised.
+2. optional- Send when necessary.
+3. Repeated- This is like dynamic array.
+ */
+
 package emulator_control;
 
 message Control{
-	required string cmd = 1;
-	optional int32 non = 2;
-	repeated int32 ports = 3;
-	repeated int32 loc = 4;
-	optional bool seq = 5;
- 	optional bool rloc=6;
+	required string cmd = 1; // send one of the supported command
+	optional int32 non = 2;  // number of nodes to add
+	repeated int32 ports = 3; // ports. Dynamic array
+	repeated int32 loc = 4;// location
+	optional bool seq = 5; // should ports be taken in sequential order?
+ 	optional bool rloc=6; // should locations be random?
+	optional int32 dn = 7; // number of data nodes. Compulsory when adding new node
+	optional int32 vcn= 8; // number of voice nodes. Compulsory when adding new node
+	optional int32 vdn = 9; // number of video nodes. Compulsory when adding new node
+	repeated int32 group = 10; // which group new node should be added to
 
 }
 
